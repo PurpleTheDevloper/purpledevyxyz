@@ -649,6 +649,53 @@
       to{ opacity: 1; transform: translateY(0); }
     }
 
+    /* ----- Specs ----- */
+    .specs-inner{ padding: 44px 48px 48px; max-width: 640px; margin: 0 auto; }
+    .specs-title{
+      font-size: clamp(32px, 4vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin: 0 0 8px;
+      background: linear-gradient(120deg, var(--text), var(--p1));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .specs-subtitle{
+      font-family: "Space Mono", monospace;
+      font-size: 13px;
+      color: var(--dim);
+      letter-spacing: .08em;
+      margin: 0 0 28px;
+    }
+    .spec-list{ display: flex; flex-direction: column; gap: 12px; }
+    .spec-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(181,124,255,.18);
+      background: rgba(7,6,10,.4);
+      transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .spec-row:hover{
+      transform: translateX(6px);
+      border-color: rgba(181,124,255,.3);
+      background: rgba(181,124,255,.06);
+      box-shadow: 0 8px 32px rgba(122,61,255,.1);
+    }
+    .spec-label{
+      font-family: "Space Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      flex-shrink: 0;
+    }
+    .spec-value{ font-size: 16px; font-weight: 600; color: var(--text); text-align: right; }
+
     .footer{
       display: flex;
       justify-content: center;
@@ -820,7 +867,7 @@
         <svg class="icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         purpledevy.xyz
       </a>
-      <a href="specs.html" class="nav-btn">
+      <a href="#specs" class="nav-btn" data-page="specs">
         <svg class="icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Specs
       </a>
@@ -872,6 +919,41 @@
           </div>
         </div>
 
+        <div class="footer">
+          <span>© 2026 PurpleDevy</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPECS -->
+    <section id="specs" class="section hidden" aria-label="PC Specs">
+      <div class="card">
+        <div class="specs-inner">
+          <h2 class="specs-title">Specs</h2>
+          <p class="specs-subtitle">Current build</p>
+          <div class="spec-list">
+            <div class="spec-row">
+              <span class="spec-label">Case</span>
+              <span class="spec-value">Hyte Y70 Touch Infinite</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">CPU</span>
+              <span class="spec-value">AMD Ryzen 9 9950X</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">GPU</span>
+              <span class="spec-value">NVIDIA GeForce RTX 5070 Founders Edition</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">RAM</span>
+              <span class="spec-value">32 GB DDR5-6400</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Storage</span>
+              <span class="spec-value">4 TB SSD</span>
+            </div>
+          </div>
+        </div>
         <div class="footer">
           <span>© 2026 PurpleDevy</span>
         </div>
@@ -941,7 +1023,7 @@
       navBtns.forEach(btn => {
         btn.classList.toggle('active', (btn.getAttribute('data-page') || '') === page);
       });
-      document.title = page === 'home' ? 'purpledevy.xyz' : (page === 'contact' ? 'Contact — purpledevy.xyz' : 'purpledevy.xyz');
+      document.title = page === 'home' ? 'purpledevy.xyz' : (page === 'specs' ? 'Specs — purpledevy.xyz' : (page === 'contact' ? 'Contact — purpledevy.xyz' : 'purpledevy.xyz'));
       if (page === 'home') {
         history.replaceState(null, '', window.location.pathname || 'index.html');
       } else {
@@ -960,7 +1042,7 @@
     // Sync nav with hash
     function onHash() {
       const hash = (location.hash || '').slice(1);
-      if (hash && ['home','contact'].includes(hash)) setPage(hash);
+      if (hash && ['home','specs','contact'].includes(hash)) setPage(hash);
       else if (!hash) setPage('home');
     }
     window.addEventListener('hashchange', onHash);
