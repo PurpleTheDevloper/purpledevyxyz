@@ -171,35 +171,42 @@
     }
 
     .section{
-      max-width: min(1200px, 100%);
+      max-width: min(880px, 100%);
       margin: 0 auto 32px;
       animation: sectionIn .7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     .section.hidden{ display:none; }
-    /* Home card + pfp */
+    /* Home card wrap — perspective for 3D tilt */
     .home-card-wrap{
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 100%;
+      perspective: 1200px;
+    }
+    /* Pfp inside card */
+    .home-pfp-wrap{
+      padding-top: 32px;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
     }
     .home-pfp{
-      width: 112px;
-      height: 112px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid rgba(181,124,255,.4);
-      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 12px 40px rgba(0,0,0,.4), 0 0 48px rgba(181,124,255,.25);
-      margin-bottom: -28px;
-      z-index: 2;
-      position: relative;
+      border: 3px solid rgba(181,124,255,.45);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 8px 32px rgba(0,0,0,.3), 0 0 40px rgba(181,124,255,.2);
+      display: block;
+      margin: 0 auto;
       background: var(--bg);
       transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
     }
     .home-pfp:hover{
-      transform: scale(1.05);
-      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 16px 48px rgba(0,0,0,.35), 0 0 64px rgba(181,124,255,.35);
-      border-color: rgba(181,124,255,.55);
+      transform: scale(1.06);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 12px 40px rgba(0,0,0,.25), 0 0 56px rgba(181,124,255,.3);
+      border-color: rgba(181,124,255,.6);
     }
     #home .card{ margin-top: 0; }
     @keyframes sectionIn{
@@ -221,9 +228,13 @@
         0 0 0 1px rgba(0,0,0,.15);
       overflow:visible;
       position:relative;
-      transition: box-shadow .4s ease, border-color .4s ease, transform .4s ease;
+      transition: box-shadow .4s ease, border-color .4s ease;
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
+      transform-style: preserve-3d;
+    }
+    .card.tilt{
+      transition: transform .12s ease-out, box-shadow .4s ease, border-color .4s ease;
     }
     .card:hover{
       box-shadow:
@@ -233,7 +244,6 @@
         0 0 0 1px rgba(181,124,255,.12),
         0 0 60px rgba(181,124,255,.08);
       border-color: rgba(181,124,255,.4);
-      transform: translateY(-2px);
     }
     .card::before{
       content:"";
@@ -257,11 +267,15 @@
     }
 
     .inner{
-      padding: 40px 64px 72px;
-      max-width: 1100px;
+      padding: 24px 48px 56px;
+      max-width: 100%;
       margin: 0 auto;
       position: relative;
       z-index: 1;
+    }
+    #home .inner{
+      padding-top: 12px;
+      padding-bottom: 64px;
     }
 
     .left{
@@ -971,8 +985,10 @@
     <!-- HOME -->
     <section id="home" class="section" aria-label="Home">
       <div class="home-card-wrap">
-        <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="112" height="112" />
-        <div class="card" role="region" aria-label="PurpleDevy Bio Card">
+        <div class="card" id="homeCard" role="region" aria-label="PurpleDevy Bio Card">
+        <div class="home-pfp-wrap">
+          <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="100" height="100" />
+        </div>
         <div class="inner">
           <div class="left">
             <div class="badgeRow">
@@ -1130,6 +1146,56 @@
         if (page) { e.preventDefault(); setPage(page); }
       });
     });
+
+    // 3D tilt on home card (mouse move)
+    (function(){
+      var card = document.getElementById('homeCard');
+      if (!card) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var maxTilt = 10;
+      var smooth = 0.2;
+      var rX = 0, rY = 0;
+      var targetRX = 0, targetRY = 0;
+      var leaveInterval = null;
+      function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+      function setTransform() {
+        card.style.transform = 'perspective(1200px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) translateZ(0)';
+      }
+      function animate() {
+        rX += (targetRX - rX) * smooth;
+        rY += (targetRY - rY) * smooth;
+        setTransform();
+        if (Math.abs(rX - targetRX) > 0.02 || Math.abs(rY - targetRY) > 0.02) requestAnimationFrame(animate);
+      }
+      card.addEventListener('mouseenter', function() {
+        if (leaveInterval) { clearInterval(leaveInterval); leaveInterval = null; }
+        card.classList.add('tilt');
+      });
+      card.addEventListener('mouseleave', function() {
+        card.classList.remove('tilt');
+        targetRX = 0;
+        targetRY = 0;
+        leaveInterval = setInterval(function() {
+          rX += (0 - rX) * 0.18;
+          rY += (0 - rY) * 0.18;
+          setTransform();
+          if (Math.abs(rX) < 0.08 && Math.abs(rY) < 0.08) {
+            rX = rY = 0;
+            card.style.transform = '';
+            clearInterval(leaveInterval);
+            leaveInterval = null;
+          }
+        }, 16);
+      });
+      card.addEventListener('mousemove', function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width - 0.5;
+        var y = (e.clientY - rect.top) / rect.height - 0.5;
+        targetRY = clamp(x * maxTilt * 2, -maxTilt, maxTilt);
+        targetRX = clamp(-y * maxTilt * 2, -maxTilt, maxTilt);
+        animate();
+      });
+    })();
 
     // Sync nav with hash
     function onHash() {
