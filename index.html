@@ -209,37 +209,35 @@
       width: 100%;
       perspective: 1200px;
     }
-    /* Pfp inside card — pill frame */
+    /* Pfp inside card */
     .home-pfp-wrap{
-      padding-top: 36px;
-      margin-bottom: 4px;
+      padding-top: 32px;
+      margin-bottom: 0;
       position: relative;
       z-index: 1;
+      text-align: center;
     }
     .home-pfp-ring{
       display: inline-flex;
-      padding: 5px;
+      padding: 4px;
       border-radius: 50%;
-      background: linear-gradient(135deg, rgba(181,124,255,.5), rgba(255,79,216,.4));
-      box-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 8px 24px rgba(181,124,255,.2);
-      margin: 0 auto;
-      transition: transform .3s ease, box-shadow .3s ease;
+      background: linear-gradient(145deg, rgba(181,124,255,.45), rgba(255,79,216,.35));
+      box-shadow: 0 4px 20px rgba(181,124,255,.15);
+      transition: transform .25s ease, box-shadow .25s ease;
     }
     .home-pfp-wrap:hover .home-pfp-ring{
-      transform: scale(1.04);
-      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 12px 36px rgba(181,124,255,.3);
+      transform: scale(1.03);
+      box-shadow: 0 8px 28px rgba(181,124,255,.25);
     }
     .home-pfp{
-      width: 96px;
-      height: 96px;
+      width: 92px;
+      height: 92px;
       border-radius: 50%;
       object-fit: cover;
       display: block;
-      border: 2px solid rgba(10,8,18,.9);
+      border: 2px solid rgba(12,10,20,.9);
       background: var(--bg);
-      transition: border-color .3s ease;
     }
-    .home-pfp-wrap:hover .home-pfp{ border-color: rgba(20,16,32,.95); }
     #home .card{ margin-top: 0; }
     @keyframes sectionIn{
       from{ opacity:0; transform: translateY(28px) scale(0.98); }
@@ -247,60 +245,42 @@
     }
 
     .card{
-      width:100%;
-      border-radius: 28px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 40%),
-        linear-gradient(180deg, rgba(24, 18, 36, .88) 0%, rgba(14, 10, 24, .82) 60%, rgba(10, 8, 18, .78) 100%);
-      border: 1px solid rgba(181,124,255,.2);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        inset -1px 0 0 rgba(0,0,0,.2),
-        0 0 0 1px rgba(0,0,0,.25),
-        0 8px 32px rgba(0,0,0,.4),
-        0 32px 80px rgba(0,0,0,.35);
-      overflow: visible;
+      width: 100%;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(28, 22, 42, .9) 0%, rgba(16, 12, 26, .88) 100%);
+      border: 1px solid rgba(181,124,255,.22);
+      box-shadow: 0 4px 24px rgba(0,0,0,.3), 0 24px 64px rgba(0,0,0,.25);
+      overflow: hidden;
       position: relative;
-      transition: box-shadow .4s ease, border-color .4s ease;
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      transition: box-shadow .35s ease, border-color .35s ease;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       transform-style: preserve-3d;
     }
     .card.tilt{
-      transition: transform .12s ease-out, box-shadow .4s ease, border-color .4s ease;
+      transition: transform .12s ease-out, box-shadow .35s ease, border-color .35s ease;
     }
     .card:hover{
-      border-color: rgba(181,124,255,.35);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.1),
-        inset -1px 0 0 rgba(0,0,0,.15),
-        0 0 0 1px rgba(181,124,255,.1),
-        0 8px 40px rgba(0,0,0,.35),
-        0 40px 100px rgba(0,0,0,.3),
-        0 0 80px rgba(181,124,255,.06);
+      border-color: rgba(181,124,255,.38);
+      box-shadow: 0 12px 40px rgba(0,0,0,.25), 0 32px 80px rgba(0,0,0,.2), 0 0 0 1px rgba(181,124,255,.08);
     }
-    /* Left accent strip */
+    /* Top accent bar */
     .card::before{
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      border-radius: 28px 0 0 28px;
-      background: linear-gradient(180deg, var(--p3), var(--p1) 30%, var(--p2) 70%, var(--p3));
-      opacity: .9;
-    }
-    /* Top edge glow */
-    .card::after{
       content: "";
       position: absolute;
       left: 0;
       right: 0;
       top: 0;
-      height: 1px;
-      border-radius: 28px 28px 0 0;
-      background: linear-gradient(90deg, transparent, rgba(181,124,255,.4) 20%, rgba(255,79,216,.35) 50%, rgba(181,124,255,.4) 80%, transparent);
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--p1) 25%, var(--p3) 50%, var(--p2) 75%, transparent);
+      opacity: .85;
+    }
+    .card::after{
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(181,124,255,.06), transparent 55%);
       pointer-events: none;
     }
 
@@ -937,35 +917,6 @@
     .boot-terminal .muted{ color: #6e7681; }
     .boot-terminal .prompt{ color: #79c0ff; }
 
-    /* Background music toggle */
-    .music-toggle{
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 90;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 1px solid rgba(181,124,255,.3);
-      background: rgba(14,10,22,.85);
-      backdrop-filter: blur(12px);
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
-    }
-    .music-toggle:hover{
-      color: var(--p1);
-      border-color: rgba(181,124,255,.5);
-      transform: scale(1.08);
-      box-shadow: 0 8px 28px rgba(181,124,255,.2);
-    }
-    .music-toggle.playing{ color: var(--p1); }
-    .music-toggle svg{ width: 22px; height: 22px; }
-    body.booting .music-toggle{ opacity: 0; pointer-events: none; }
-    .music-toggle{ transition: opacity .4s ease; }
   </style>
 </head>
 
@@ -1017,14 +968,6 @@
     </div>
   </nav>
 
-  <audio id="bgmusic" loop preload="auto" aria-label="Background music">
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
-  <button type="button" class="music-toggle" id="musicToggle" aria-label="Play background music" title="Play / Pause music">
-    <svg id="iconPlay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-    <svg id="iconPause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-  </button>
-
   <main class="wrap">
     <!-- HOME -->
     <section id="home" class="section" aria-label="Home">
@@ -1032,7 +975,7 @@
         <div class="card" id="homeCard" role="region" aria-label="PurpleDevy Bio Card">
         <div class="home-pfp-wrap">
           <span class="home-pfp-ring">
-            <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="96" height="96" />
+            <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="92" height="92" />
           </span>
         </div>
         <div class="inner">
@@ -1310,37 +1253,6 @@
       else runSequence();
     })();
 
-    // Background music — play/pause toggle; try autoplay after boot (often blocked until user interaction)
-    (function(){
-      var audio = document.getElementById('bgmusic');
-      var btn = document.getElementById('musicToggle');
-      var iconPlay = document.getElementById('iconPlay');
-      var iconPause = document.getElementById('iconPause');
-      if (!audio || !btn) return;
-      audio.volume = 0.08;
-      function updateIcon() {
-        var playing = !audio.paused;
-        btn.classList.toggle('playing', playing);
-        iconPlay.style.display = playing ? 'none' : 'block';
-        iconPause.style.display = playing ? 'block' : 'none';
-      }
-      btn.addEventListener('click', function(){
-        if (audio.paused) {
-          audio.play().catch(function(){});
-        } else {
-          audio.pause();
-        }
-        updateIcon();
-      });
-      audio.addEventListener('play', updateIcon);
-      audio.addEventListener('pause', updateIcon);
-      updateIcon();
-      // Try autoplay after boot finishes (may be blocked; user can click the button)
-      setTimeout(function(){
-        audio.play().catch(function(){});
-        updateIcon();
-      }, 2800);
-    })();
   </script>
 </body>
 </html>
