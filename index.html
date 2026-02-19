@@ -210,27 +210,46 @@
     .card{
       width:100%;
       border-radius: var(--radius);
-      background: linear-gradient(165deg, rgba(22, 18, 32, .72), rgba(14, 10, 22, .58));
-      border: 1px solid rgba(181,124,255,.25);
-      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035) 0%, transparent 50%),
+        linear-gradient(165deg, rgba(28, 22, 42, .78) 0%, rgba(18, 14, 28, .68) 50%, rgba(12, 9, 20, .62) 100%);
+      border: 1px solid rgba(181,124,255,.28);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.06),
+        0 4px 24px rgba(0,0,0,.25),
+        0 24px 64px rgba(0,0,0,.35),
+        0 0 0 1px rgba(0,0,0,.15);
       overflow:visible;
       position:relative;
       transition: box-shadow .4s ease, border-color .4s ease, transform .4s ease;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
     }
     .card:hover{
-      box-shadow: 0 40px 120px rgba(0,0,0,.35), 0 0 0 1px rgba(181,124,255,.15), 0 0 80px rgba(181,124,255,.06);
-      border-color: rgba(181,124,255,.35);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 8px 32px rgba(0,0,0,.2),
+        0 32px 80px rgba(0,0,0,.3),
+        0 0 0 1px rgba(181,124,255,.12),
+        0 0 60px rgba(181,124,255,.08);
+      border-color: rgba(181,124,255,.4);
       transform: translateY(-2px);
     }
     .card::before{
       content:"";
-      position:absolute; left:0; top:0; right:0; height:3px;
-      background: linear-gradient(90deg, transparent 0%, rgba(181,124,255,.95) 20%, rgba(255,79,216,.9) 50%, rgba(122,61,255,.95) 80%, transparent 100%);
+      position:absolute; left:0; top:0; right:0; height:4px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(181,124,255,.9) 25%, rgba(255,79,216,.85) 50%, rgba(122,61,255,.9) 75%, transparent 100%);
       background-size: 200% 100%;
-      opacity:.95;
+      opacity:1;
       animation: barShine 8s ease-in-out infinite;
+    }
+    .card::after{
+      content:"";
+      position:absolute; inset:0;
+      border-radius: var(--radius);
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(181,124,255,.12), transparent 50%);
+      pointer-events: none;
     }
     @keyframes barShine{
       0%, 100%{ background-position: 0% 0; }
@@ -241,6 +260,8 @@
       padding: 40px 64px 72px;
       max-width: 1100px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
     .left{
@@ -540,6 +561,8 @@
       padding: 48px 48px 52px;
       max-width: 520px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
     .section-title{
       font-size: clamp(32px, 4vw, 44px);
@@ -676,7 +699,7 @@
     }
 
     /* ----- Specs ----- */
-    .specs-inner{ padding: 44px 48px 48px; max-width: 640px; margin: 0 auto; }
+    .specs-inner{ padding: 44px 48px 48px; max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
     .specs-title{
       font-size: clamp(32px, 4vw, 42px);
       font-weight: 800;
@@ -734,6 +757,8 @@
       background: linear-gradient(180deg, rgba(14,10,22,.2), rgba(10,8,14,.4));
       text-align: center;
       letter-spacing: .02em;
+      position: relative;
+      z-index: 1;
     }
 
     /* card entrance */
@@ -1180,7 +1205,7 @@
       var iconPlay = document.getElementById('iconPlay');
       var iconPause = document.getElementById('iconPause');
       if (!audio || !btn) return;
-      audio.volume = 0.35;
+      audio.volume = 0.08;
       function updateIcon() {
         var playing = !audio.paused;
         btn.classList.toggle('playing', playing);
