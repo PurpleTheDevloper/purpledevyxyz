@@ -176,6 +176,32 @@
       animation: sectionIn .7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     .section.hidden{ display:none; }
+    /* Home card + pfp */
+    .home-card-wrap{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .home-pfp{
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(181,124,255,.4);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 12px 40px rgba(0,0,0,.4), 0 0 48px rgba(181,124,255,.25);
+      margin-bottom: -28px;
+      z-index: 2;
+      position: relative;
+      background: var(--bg);
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .home-pfp:hover{
+      transform: scale(1.05);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 16px 48px rgba(0,0,0,.35), 0 0 64px rgba(181,124,255,.35);
+      border-color: rgba(181,124,255,.55);
+    }
+    #home .card{ margin-top: 0; }
     @keyframes sectionIn{
       from{ opacity:0; transform: translateY(28px) scale(0.98); }
       to{ opacity:1; transform: translateY(0) scale(1); }
@@ -184,18 +210,18 @@
     .card{
       width:100%;
       border-radius: var(--radius);
-      background: linear-gradient(165deg, rgba(22, 18, 32, .92), rgba(14, 10, 22, .85));
-      border: 1px solid rgba(181,124,255,.22);
+      background: linear-gradient(165deg, rgba(22, 18, 32, .72), rgba(14, 10, 22, .58));
+      border: 1px solid rgba(181,124,255,.25);
       box-shadow: var(--shadow);
-      overflow:hidden;
+      overflow:visible;
       position:relative;
       transition: box-shadow .4s ease, border-color .4s ease, transform .4s ease;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
     .card:hover{
-      box-shadow: 0 40px 120px rgba(0,0,0,.4), 0 0 0 1px rgba(181,124,255,.12), 0 0 80px rgba(181,124,255,.08);
-      border-color: rgba(181,124,255,.3);
+      box-shadow: 0 40px 120px rgba(0,0,0,.35), 0 0 0 1px rgba(181,124,255,.15), 0 0 80px rgba(181,124,255,.06);
+      border-color: rgba(181,124,255,.35);
       transform: translateY(-2px);
     }
     .card::before{
@@ -212,7 +238,7 @@
     }
 
     .inner{
-      padding: 40px 64px 44px;
+      padding: 40px 64px 72px;
       max-width: 1100px;
       margin: 0 auto;
     }
@@ -833,6 +859,36 @@
     }
     .boot-terminal .muted{ color: #6e7681; }
     .boot-terminal .prompt{ color: #79c0ff; }
+
+    /* Background music toggle */
+    .music-toggle{
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 90;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(181,124,255,.3);
+      background: rgba(14,10,22,.85);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    }
+    .music-toggle:hover{
+      color: var(--p1);
+      border-color: rgba(181,124,255,.5);
+      transform: scale(1.08);
+      box-shadow: 0 8px 28px rgba(181,124,255,.2);
+    }
+    .music-toggle.playing{ color: var(--p1); }
+    .music-toggle svg{ width: 22px; height: 22px; }
+    body.booting .music-toggle{ opacity: 0; pointer-events: none; }
+    .music-toggle{ transition: opacity .4s ease; }
   </style>
 </head>
 
@@ -878,10 +934,20 @@
     </div>
   </nav>
 
+  <audio id="bgmusic" loop preload="auto" aria-label="Background music">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+  <button type="button" class="music-toggle" id="musicToggle" aria-label="Play background music" title="Play / Pause music">
+    <svg id="iconPlay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <svg id="iconPause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+  </button>
+
   <main class="wrap">
     <!-- HOME -->
     <section id="home" class="section" aria-label="Home">
-      <div class="card" role="region" aria-label="PurpleDevy Bio Card">
+      <div class="home-card-wrap">
+        <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="112" height="112" />
+        <div class="card" role="region" aria-label="PurpleDevy Bio Card">
         <div class="inner">
           <div class="left">
             <div class="badgeRow">
@@ -922,6 +988,7 @@
         <div class="footer">
           <span>© 2026 PurpleDevy</span>
         </div>
+      </div>
       </div>
     </section>
 
@@ -1104,6 +1171,38 @@
       }
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', runSequence);
       else runSequence();
+    })();
+
+    // Background music — play/pause toggle; try autoplay after boot (often blocked until user interaction)
+    (function(){
+      var audio = document.getElementById('bgmusic');
+      var btn = document.getElementById('musicToggle');
+      var iconPlay = document.getElementById('iconPlay');
+      var iconPause = document.getElementById('iconPause');
+      if (!audio || !btn) return;
+      audio.volume = 0.35;
+      function updateIcon() {
+        var playing = !audio.paused;
+        btn.classList.toggle('playing', playing);
+        iconPlay.style.display = playing ? 'none' : 'block';
+        iconPause.style.display = playing ? 'block' : 'none';
+      }
+      btn.addEventListener('click', function(){
+        if (audio.paused) {
+          audio.play().catch(function(){});
+        } else {
+          audio.pause();
+        }
+        updateIcon();
+      });
+      audio.addEventListener('play', updateIcon);
+      audio.addEventListener('pause', updateIcon);
+      updateIcon();
+      // Try autoplay after boot finishes (may be blocked; user can click the button)
+      setTimeout(function(){
+        audio.play().catch(function(){});
+        updateIcon();
+      }, 2800);
     })();
   </script>
 </body>
