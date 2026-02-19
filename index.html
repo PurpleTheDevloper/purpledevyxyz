@@ -507,57 +507,129 @@
     }
 
     /* ----- Contact ----- */
+    #contact .card{
+      animation-delay: 0s;
+    }
+    .contact-inner{
+      padding: 48px 48px 52px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
     .section-title{
-      font-size: clamp(28px, 3vw, 38px);
+      font-size: clamp(32px, 4vw, 44px);
       font-weight: 800;
       letter-spacing: -1px;
-      margin: 0 0 20px;
-      background: linear-gradient(90deg, var(--text), var(--p1));
+      margin: 0 0 12px;
+      background: linear-gradient(120deg, var(--text) 0%, var(--p1) 40%, var(--p3) 100%);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      animation: contactTitleShine 5s ease-in-out infinite;
+    }
+    @keyframes contactTitleShine{
+      0%, 100%{ background-position: 0% center; }
+      50%{ background-position: 100% center; }
+    }
+    .contact-subtitle{
+      font-family: "Space Mono", monospace;
+      font-size: 13px;
+      color: var(--dim);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin: 0 0 28px;
     }
     .contact-block{
       text-align: center;
-      padding: 20px 0;
-      max-width: 420px;
-      margin: 0 auto;
+      padding: 0;
     }
-    .contact-block p{
+    .contact-desc{
       color: var(--muted);
       font-size: 17px;
-      line-height: 1.6;
-      margin: 0 0 24px;
+      line-height: 1.7;
+      margin: 0 0 28px;
+      max-width: 36ch;
+      margin-left: auto;
+      margin-right: auto;
     }
     .discord-handle{
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px 24px;
-      border-radius: 16px;
-      border: 1px solid rgba(181,124,255,.24);
-      background: linear-gradient(135deg, rgba(181,124,255,.1), rgba(122,61,255,.06));
+      gap: 14px;
+      padding: 20px 28px;
+      border-radius: 18px;
+      border: 1px solid rgba(181,124,255,.28);
+      background: linear-gradient(135deg, rgba(181,124,255,.14), rgba(122,61,255,.08));
       font-family: "Space Mono", monospace;
-      font-size: 18px;
+      font-size: 19px;
       color: var(--text);
-      margin-bottom: 20px;
-      transition: transform .2s ease, box-shadow .2s ease;
+      margin-bottom: 24px;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .discord-handle::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 50%);
+      pointer-events: none;
     }
     .discord-handle:hover{
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(181,124,255,.15);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 20px 48px rgba(181,124,255,.22);
+      border-color: rgba(181,124,255,.4);
     }
-    .discord-handle span{ color: var(--muted); font-size: 14px; font-weight: 600; }
-    .discord-handle .discord-icon{ flex-shrink: 0; opacity: .9; }
+    .discord-handle span{ color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .05em; }
+    .discord-handle strong{ letter-spacing: .02em; }
+    .discord-handle .discord-icon{
+      flex-shrink: 0;
+      opacity: .95;
+      transition: transform .3s ease;
+    }
+    .discord-handle:hover .discord-icon{
+      transform: scale(1.08);
+    }
     .contact-actions{
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
       justify-content: center;
     }
     .contact-actions .btn{
-      min-width: 140px;
+      min-width: 160px;
       justify-content: center;
+      padding: 14px 20px;
+      font-size: 14px;
+    }
+    /* Contact section entrance — when section becomes visible */
+    #contact.section:not(.hidden) .contact-title{
+      animation: contactFadeUp .5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    #contact.section:not(.hidden) .contact-subtitle{
+      animation: contactFadeUp .5s cubic-bezier(0.22, 1, 0.36, 1) .08s forwards;
+      opacity: 0;
+    }
+    #contact.section:not(.hidden) .contact-desc{
+      animation: contactFadeUp .5s cubic-bezier(0.22, 1, 0.36, 1) .14s forwards;
+      opacity: 0;
+    }
+    #contact.section:not(.hidden) .discord-handle{
+      animation: contactFadeUp .5s cubic-bezier(0.22, 1, 0.36, 1) .2s forwards;
+      opacity: 0;
+    }
+    #contact.section:not(.hidden) .contact-actions{
+      animation: contactFadeUp .5s cubic-bezier(0.22, 1, 0.36, 1) .26s forwards;
+      opacity: 0;
+    }
+    #contact .contact-title{ opacity: 0; }
+    #contact .contact-subtitle{ opacity: 0; }
+    #contact .contact-desc{ opacity: 0; }
+    #contact .discord-handle{ opacity: 0; }
+    #contact .contact-actions{ opacity: 0; }
+    @keyframes contactFadeUp{
+      from{ opacity: 0; transform: translateY(14px); }
+      to{ opacity: 1; transform: translateY(0); }
     }
 
     .footer{
@@ -589,9 +661,11 @@
     /* reduced motion */
     @media (prefers-reduced-motion: reduce){
       .grid, .orb, .nav, .card, .badge, .name, .handle, .bio, .callout, .music-callout, .panel, .project-card,
-      .row, .dot, .card::before{ animation:none !important; }
+      .row, .dot, .card::before, .section-title{ animation:none !important; }
       .badge, .name, .handle, .bio, .callout, .music-callout, .panel, .grid{ opacity:1; }
       .orb{ opacity: .25; }
+      #contact .contact-title, #contact .contact-subtitle, #contact .contact-desc,
+      #contact .discord-handle, #contact .contact-actions{ opacity:1; animation:none !important; }
     }
 
     /* toast */
@@ -790,10 +864,11 @@
     <!-- CONTACT -->
     <section id="contact" class="section hidden" aria-label="Contact">
       <div class="card">
-        <div style="padding: 36px 30px 40px;">
-            <div class="contact-block">
-            <h2 class="section-title">Contact</h2>
-            <p>Hit me up on Discord — add me with the handle below.</p>
+        <div class="contact-inner">
+          <div class="contact-block">
+            <h2 class="section-title contact-title">Contact</h2>
+            <p class="contact-subtitle">Get in touch</p>
+            <p class="contact-desc">Hit me up on Discord — add me with the handle below.</p>
             <div class="discord-handle">
               <svg class="discord-icon icon-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
               <span>Discord</span>
@@ -803,6 +878,9 @@
               <button type="button" class="btn" onclick="copyText('ragelit')">Copy handle</button>
             </div>
           </div>
+        </div>
+        <div class="footer">
+          <span>© 2026 PurpleDevy</span>
         </div>
       </div>
     </section>
