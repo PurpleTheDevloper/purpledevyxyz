@@ -160,7 +160,7 @@
     }
 
     .section{
-      max-width: min(1280px, 100%);
+      max-width: min(1400px, 100%);
       margin: 0 auto 32px;
       animation: sectionIn .6s ease forwards;
     }
@@ -192,8 +192,8 @@
     }
 
     .inner{
-      padding: 48px 56px 44px;
-      max-width: 900px;
+      padding: 56px 72px 52px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -580,16 +580,16 @@
     }
     a{ color: inherit; text-decoration:none; }
 
-    /* ----- Boot screen ----- */
+    /* ----- Boot screen (OS-style) ----- */
     #boot{
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: #0a0a0e;
+      background: linear-gradient(180deg, #0d0d12 0%, #08080b 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity .5s ease;
+      transition: opacity .4s ease;
     }
     body.boot-done #boot{
       opacity: 0;
@@ -599,25 +599,52 @@
     body.booting .wrap{
       visibility: hidden;
     }
+    .boot-window{
+      width: min(420px, 92vw);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06);
+      background: #1a1a22;
+    }
+    .boot-titlebar{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #252530;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: 12px;
+      color: #8b8b9e;
+    }
+    .boot-titlebar-dots{
+      display: flex;
+      gap: 8px;
+    }
+    .boot-titlebar-dots span{
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .boot-titlebar-dots span:nth-child(1){ background: #ff5f57; }
+    .boot-titlebar-dots span:nth-child(2){ background: #febc2e; }
+    .boot-titlebar-dots span:nth-child(3){ background: #28c840; }
     .boot-terminal{
       font-family: "Space Mono", ui-monospace, monospace;
-      font-size: 15px;
+      font-size: 13px;
       color: #7ee787;
-      padding: 32px 40px;
-      border: 1px solid rgba(126,231,135,.2);
-      border-radius: 12px;
-      background: rgba(0,0,0,.4);
-      min-width: 320px;
-      max-width: 90vw;
+      padding: 20px 24px 24px;
+      background: #0f0f14;
+      min-height: 140px;
     }
     .boot-terminal .line{
-      margin-bottom: 8px;
-      min-height: 1.4em;
+      margin-bottom: 6px;
+      min-height: 1.35em;
     }
     .boot-terminal .line:last-child{ margin-bottom: 0; }
     .boot-cursor{
       display: inline-block;
-      width: 8px;
+      width: 7px;
       height: 1.1em;
       background: #7ee787;
       margin-left: 2px;
@@ -634,12 +661,20 @@
 
 <body class="booting">
   <div id="boot" role="status" aria-live="polite" aria-label="Loading">
-    <div class="boot-terminal">
-      <div class="line" id="boot-line-1"></div>
-      <div class="line" id="boot-line-2"></div>
-      <div class="line" id="boot-line-3"></div>
-      <div class="line" id="boot-line-4"></div>
-      <div class="line" id="boot-line-5"></div>
+    <div class="boot-window">
+      <div class="boot-titlebar">
+        <div class="boot-titlebar-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span>purpledevy@localhost — Terminal</span>
+      </div>
+      <div class="boot-terminal">
+        <div class="line" id="boot-line-1"></div>
+        <div class="line" id="boot-line-2"></div>
+        <div class="line" id="boot-line-3"></div>
+        <div class="line" id="boot-line-4"></div>
+        <div class="line" id="boot-line-5"></div>
+      </div>
     </div>
   </div>
 
@@ -790,25 +825,28 @@
     window.addEventListener('hashchange', onHash);
     onHash();
 
-    // Boot sequence
+    // Boot sequence — faster, OS-style
     (function(){
+      var prompt = '<span class="prompt">purpledevy@localhost:~$</span> ';
       var lines = [
-        { id: 'boot-line-1', text: 'Preparing for boot...', delay: 0, type: true },
-        { id: 'boot-line-2', text: '[OK] Loading system...', delay: 800, type: true },
-        { id: 'boot-line-3', text: '$ sudo apt purpledevy', delay: 400, type: true },
-        { id: 'boot-line-4', text: '[OK] PurpleDevy loaded.', delay: 400, type: true },
-        { id: 'boot-line-5', text: 'Starting interface...', delay: 400, type: true }
+        { id: 'boot-line-1', text: '[  OK  ] Starting kernel...', delay: 0, type: true },
+        { id: 'boot-line-2', text: '[  OK  ] Mounting filesystems', delay: 180, type: true },
+        { id: 'boot-line-3', text: prompt + 'startx --purpledevy', delay: 120, type: true, hasPrompt: true },
+        { id: 'boot-line-4', text: '[  OK  ] PurpleDevy session loaded', delay: 100, type: true },
+        { id: 'boot-line-5', text: 'Welcome. Initializing desktop...', delay: 100, type: true }
       ];
       var cursor = '<span class="boot-cursor"></span>';
-      var charDelay = 55;
-      var lineDelay = 200;
+      var charDelay = 24;
+      var lineDelay = 60;
 
-      function typeLine(el, str, cb) {
+      function typeLine(el, str, cb, withPrompt) {
         el.innerHTML = '';
         var i = 0;
+        var len = str.length;
+        var prefix = withPrompt ? prompt : '';
         function tick() {
-          if (i <= str.length) {
-            el.innerHTML = str.slice(0, i) + (i < str.length ? cursor : '');
+          if (i <= len) {
+            el.innerHTML = prefix + str.slice(0, i) + (i < len ? cursor : '');
             i++;
             setTimeout(tick, charDelay);
           } else if (cb) cb();
@@ -823,20 +861,21 @@
             setTimeout(function(){
               document.body.classList.remove('booting');
               document.body.classList.add('boot-done');
-              setTimeout(function(){ var b = document.getElementById('boot'); if (b) b.style.display = 'none'; }, 520);
-            }, 500);
+              setTimeout(function(){ var b = document.getElementById('boot'); if (b) b.style.display = 'none'; }, 420);
+            }, 280);
             return;
           }
           var line = lines[idx];
           var el = document.getElementById(line.id);
           if (!el) { idx++; next(); return; }
+          var text = line.hasPrompt ? 'startx --purpledevy' : line.text;
           setTimeout(function(){
-            typeLine(el, line.text, function(){
-              el.innerHTML = line.text;
+            typeLine(el, text, function(){
+              el.innerHTML = (line.hasPrompt ? prompt : '') + text;
               idx++;
               setTimeout(next, lineDelay);
-            });
-          }, idx === 0 ? 400 : line.delay);
+            }, !!line.hasPrompt);
+          }, idx === 0 ? 180 : line.delay);
         }
         next();
       }
