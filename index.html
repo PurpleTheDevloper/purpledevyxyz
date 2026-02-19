@@ -38,11 +38,34 @@
       margin:0;
       font-family: Inter, system-ui, -apple-system, sans-serif;
       color:var(--text);
-      background: radial-gradient(1600px 900px at 12% 0%, rgba(122,61,255,.28), transparent 50%),
-                  radial-gradient(1200px 800px at 92% 10%, rgba(255,79,216,.18), transparent 50%),
-                  radial-gradient(1100px 750px at 50% 100%, rgba(181,124,255,.15), transparent 55%),
-                  var(--bg);
+      background: var(--bg);
       overflow-x:hidden;
+    }
+    /* Background video (home) */
+    .bg-video-wrap{
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-video-wrap video{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .bg-video-overlay{
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(5,4,8,.75) 0%, rgba(5,4,8,.82) 50%, rgba(5,4,8,.88) 100%);
+      pointer-events: none;
+    }
+    .bg-video-overlay::before{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 20%, rgba(122,61,255,.12), transparent 50%),
+                  radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,79,216,.08), transparent 50%);
+      pointer-events: none;
     }
 
     /* ----- NAV ----- */
@@ -122,6 +145,7 @@
 
     .grid{
       position:fixed; inset:0;
+      z-index: 1;
       background:
         linear-gradient(to right, rgba(181,124,255,.06) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(181,124,255,.06) 1px, transparent 1px);
@@ -149,6 +173,7 @@
       opacity:.25;
       pointer-events:none;
       mix-blend-mode: screen;
+      z-index: 1;
     }
     .orb{ opacity: 0; }
     .orb.one{ left:-180px; top:-180px; background: radial-gradient(circle at 30% 30%, var(--p1), transparent 60%); animation: float1 12s ease-in-out infinite, orbFade 1.2s ease .3s forwards;}
@@ -184,30 +209,37 @@
       width: 100%;
       perspective: 1200px;
     }
-    /* Pfp inside card */
+    /* Pfp inside card — pill frame */
     .home-pfp-wrap{
-      padding-top: 32px;
-      margin-bottom: 8px;
+      padding-top: 36px;
+      margin-bottom: 4px;
       position: relative;
       z-index: 1;
     }
+    .home-pfp-ring{
+      display: inline-flex;
+      padding: 5px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(181,124,255,.5), rgba(255,79,216,.4));
+      box-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 8px 24px rgba(181,124,255,.2);
+      margin: 0 auto;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .home-pfp-wrap:hover .home-pfp-ring{
+      transform: scale(1.04);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 12px 36px rgba(181,124,255,.3);
+    }
     .home-pfp{
-      width: 100px;
-      height: 100px;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid rgba(181,124,255,.45);
-      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 8px 32px rgba(0,0,0,.3), 0 0 40px rgba(181,124,255,.2);
       display: block;
-      margin: 0 auto;
+      border: 2px solid rgba(10,8,18,.9);
       background: var(--bg);
-      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      transition: border-color .3s ease;
     }
-    .home-pfp:hover{
-      transform: scale(1.06);
-      box-shadow: 0 0 0 1px rgba(0,0,0,.2), 0 12px 40px rgba(0,0,0,.25), 0 0 56px rgba(181,124,255,.3);
-      border-color: rgba(181,124,255,.6);
-    }
+    .home-pfp-wrap:hover .home-pfp{ border-color: rgba(20,16,32,.95); }
     #home .card{ margin-top: 0; }
     @keyframes sectionIn{
       from{ opacity:0; transform: translateY(28px) scale(0.98); }
@@ -216,54 +248,60 @@
 
     .card{
       width:100%;
-      border-radius: var(--radius);
+      border-radius: 28px;
       background:
-        linear-gradient(180deg, rgba(255,255,255,.035) 0%, transparent 50%),
-        linear-gradient(165deg, rgba(28, 22, 42, .78) 0%, rgba(18, 14, 28, .68) 50%, rgba(12, 9, 20, .62) 100%);
-      border: 1px solid rgba(181,124,255,.28);
+        linear-gradient(135deg, rgba(255,255,255,.04) 0%, transparent 40%),
+        linear-gradient(180deg, rgba(24, 18, 36, .88) 0%, rgba(14, 10, 24, .82) 60%, rgba(10, 8, 18, .78) 100%);
+      border: 1px solid rgba(181,124,255,.2);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.06),
-        0 4px 24px rgba(0,0,0,.25),
-        0 24px 64px rgba(0,0,0,.35),
-        0 0 0 1px rgba(0,0,0,.15);
-      overflow:visible;
-      position:relative;
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset -1px 0 0 rgba(0,0,0,.2),
+        0 0 0 1px rgba(0,0,0,.25),
+        0 8px 32px rgba(0,0,0,.4),
+        0 32px 80px rgba(0,0,0,.35);
+      overflow: visible;
+      position: relative;
       transition: box-shadow .4s ease, border-color .4s ease;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
       transform-style: preserve-3d;
     }
     .card.tilt{
       transition: transform .12s ease-out, box-shadow .4s ease, border-color .4s ease;
     }
     .card:hover{
+      border-color: rgba(181,124,255,.35);
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 8px 32px rgba(0,0,0,.2),
-        0 32px 80px rgba(0,0,0,.3),
-        0 0 0 1px rgba(181,124,255,.12),
-        0 0 60px rgba(181,124,255,.08);
-      border-color: rgba(181,124,255,.4);
+        inset 0 1px 0 rgba(255,255,255,.1),
+        inset -1px 0 0 rgba(0,0,0,.15),
+        0 0 0 1px rgba(181,124,255,.1),
+        0 8px 40px rgba(0,0,0,.35),
+        0 40px 100px rgba(0,0,0,.3),
+        0 0 80px rgba(181,124,255,.06);
     }
+    /* Left accent strip */
     .card::before{
-      content:"";
-      position:absolute; left:0; top:0; right:0; height:4px;
-      border-radius: var(--radius) var(--radius) 0 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(181,124,255,.9) 25%, rgba(255,79,216,.85) 50%, rgba(122,61,255,.9) 75%, transparent 100%);
-      background-size: 200% 100%;
-      opacity:1;
-      animation: barShine 8s ease-in-out infinite;
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: 28px 0 0 28px;
+      background: linear-gradient(180deg, var(--p3), var(--p1) 30%, var(--p2) 70%, var(--p3));
+      opacity: .9;
     }
+    /* Top edge glow */
     .card::after{
-      content:"";
-      position:absolute; inset:0;
-      border-radius: var(--radius);
-      background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(181,124,255,.12), transparent 50%);
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1px;
+      border-radius: 28px 28px 0 0;
+      background: linear-gradient(90deg, transparent, rgba(181,124,255,.4) 20%, rgba(255,79,216,.35) 50%, rgba(181,124,255,.4) 80%, transparent);
       pointer-events: none;
-    }
-    @keyframes barShine{
-      0%, 100%{ background-position: 0% 0; }
-      50%{ background-position: 100% 0; }
     }
 
     .inner{
@@ -932,6 +970,12 @@
 </head>
 
 <body class="booting">
+  <div class="bg-video-wrap" aria-hidden="true">
+    <video id="bgvideo" autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+    <div class="bg-video-overlay"></div>
+  </div>
   <div id="boot" role="status" aria-live="polite" aria-label="Loading">
     <div class="boot-window">
       <div class="boot-titlebar">
@@ -987,7 +1031,9 @@
       <div class="home-card-wrap">
         <div class="card" id="homeCard" role="region" aria-label="PurpleDevy Bio Card">
         <div class="home-pfp-wrap">
-          <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="100" height="100" />
+          <span class="home-pfp-ring">
+            <img src="pfp.png" alt="PurpleDevy" class="home-pfp" width="96" height="96" />
+          </span>
         </div>
         <div class="inner">
           <div class="left">
